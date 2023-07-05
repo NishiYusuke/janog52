@@ -27,17 +27,18 @@ for section in config.sections():
         output = telnet_connection.send_command('show ip interface brief')
 
         # 出力結果からIPアドレスとインタフェース情報を抽出
-        lines = output.splitlines()[2:5]  # ヘッダーと最終行を除外
+        lines = output.splitlines()[2:]  # ヘッダーを除外
         interfaces = []
         for line in lines:
-            interface, ip_address, _, method, status, protocol = line.split()[:6]
-            interfaces.append({
-                "interface": interface,
-                "ipaddress": ip_address,
-                "method" : method,
-                "status": status,
-                "protocol": protocol,
-                })
+            if len(line.split()) == 6:
+                interface, ip_address, _, method, status, protocol = line.split()[:6]
+                interfaces.append({
+                    "interface": interface,
+                    "ipaddress": ip_address,
+                    "method" : method,
+                    "status": status,
+                    "protocol": protocol,
+                    })
 
         # 結果を表示
         print("インタフェース情報:")
@@ -51,17 +52,18 @@ for section in config.sections():
         output = telnet_connection.send_command('show ip interface brief')
 
         # 出力結果からIPアドレスとインタフェース情報を抽出
-        lines = output.splitlines()[3:-2]  # ヘッダーと末尾を除外
+        lines = output.splitlines()[3:]  # ヘッダーを除外
         interfaces = []
         for line in lines:
-            interface, ip_address, status, protocol, mtu = line.split()[:5]
-            interfaces.append({
-                "interface": interface,
-                "ipaddress": ip_address,
-                "status": status,
-                "protocol": protocol,
-                "mtu": mtu,
-                })
+            if len(line.split()) == 5:
+                interface, ip_address, status, protocol, mtu = line.split()[:5]
+                interfaces.append({
+                    "interface": interface,
+                    "ipaddress": ip_address,
+                    "status": status,
+                    "protocol": protocol,
+                    "mtu": mtu,
+                    })
 
         # 結果を表示
         print("インタフェース情報:")
