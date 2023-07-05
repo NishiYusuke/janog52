@@ -10,7 +10,6 @@ config.read('config.ini')
 
 for section in config.sections():
     # デバイスの接続情報を設定
-    print(section + ": ")
     device = {
         'device_type': config.get(section, "device_type"),
         'username': config.get(section, "user"),
@@ -21,7 +20,6 @@ for section in config.sections():
     # デバイスにtelnet接続
     telnet_connection = ConnectHandler(**device)
     prompt = telnet_connection.find_prompt()
-    print(f"接続成功: {prompt}")
 
     if config.get(section, "device_type") == "cisco_ios_telnet":
         output = telnet_connection.send_command('show ip interface brief')
@@ -40,14 +38,6 @@ for section in config.sections():
                     "protocol": protocol,
                     })
 
-        # 結果を表示
-        print("インタフェース情報:")
-        for interface in interfaces:
-            interface_json_data = json.dumps(interface)
-
-            # JSON文字列の表示
-            print(interface_json_data)
-
     if config.get(section, "device_type") == "arista_eos_telnet":
         output = telnet_connection.send_command('show ip interface brief')
 
@@ -65,13 +55,8 @@ for section in config.sections():
                     "mtu": mtu,
                     })
 
-        # 結果を表示
-        print("インタフェース情報:")
-        for interface in interfaces:
-            interface_json_data = json.dumps(interface)
-
-            # JSON文字列の表示
-            print(interface_json_data)
+    # 結果を表示
+    print(json.dumps({section: interfaces}))
 
     # Telnet接続を閉じる
     telnet_connection.disconnect()
