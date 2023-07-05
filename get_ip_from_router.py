@@ -13,6 +13,7 @@ for section in config.sections():
     print(section + ": ")
     device = {
         'device_type': config.get(section, "device_type"),
+        'username': config.get(section, "user"),
         'ip': config.get(section, "ip_address"),
         'port': int(config.get(section, "port")),  # Telnetポート番号
     }
@@ -36,6 +37,30 @@ for section in config.sections():
                 "method" : method,
                 "status": status,
                 "protocol": protocol,
+                })
+
+        # 結果を表示
+        print("インタフェース情報:")
+        for interface in interfaces:
+            interface_json_data = json.dumps(interface)
+
+            # JSON文字列の表示
+            print(interface_json_data)
+
+    if config.get(section, "device_type") == "arista_eos_telnet":
+        output = telnet_connection.send_command('show ip interface brief')
+
+        # 出力結果からIPアドレスとインタフェース情報を抽出
+        lines = output.splitlines()[3:-2]  # ヘッダーと末尾を除外
+        interfaces = []
+        for line in lines:
+            interface, ip_address, status, protocol, mtu = line.split()[:5]
+            interfaces.append({
+                "interface": interface,
+                "ipaddress": ip_address,
+                "status": status,
+                "protocol": protocol,
+                "mtu": mtu,
                 })
 
         # 結果を表示
